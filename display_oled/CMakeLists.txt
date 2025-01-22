@@ -54,6 +54,8 @@ target_link_libraries(display_oled
 # Add the standard include files to the build
 target_include_directories(display_oled PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
+  ${CMAKE_CURRENT_LIST_DIR}/inc  # Certifique-se de incluir o diretório "inc"
+
 )
 
 # Add any user requested libraries
