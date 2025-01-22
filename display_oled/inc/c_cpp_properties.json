@@ -4,7 +4,9 @@
         "name": "Win32",
         "includePath": [
           "${workspaceFolder}/**",
-          "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk"
+          "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk/src/common/pico_stdlib/include",   // Adicionar diretório de cabeçalhos do SDK
+          "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk/src/rp2_common/hardware_i2c/include", // Adicionar diretório de cabeçalhos do I2C
+          "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk/src/rp2_common/pico_binary_info/include" // Adicionar diretório de cabeçalhos do pico_binary_info
         ],
         "defines": [],
         "compilerPath": "C:/Program Files (x86)/ArmGNUToolchain/14.2rel1/bin/arm-none-eabi-gcc.exe",
