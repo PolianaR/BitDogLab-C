@@ -4,7 +4,7 @@
         "name": "Win32",
         "includePath": [
           "${workspaceFolder}/**",
-          "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/inc"
+          "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk"
         ],
         "defines": [],
         "compilerPath": "C:/Program Files (x86)/ArmGNUToolchain/14.2rel1/bin/arm-none-eabi-gcc.exe",
