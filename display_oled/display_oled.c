@@ -1,4 +1,6 @@
 #include <string.h>
+#include <stdint.h>
+#include <stdbool.h>  
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "inc/ssd1306.h"
@@ -8,8 +10,37 @@
 #define COUNT_OF(arr) (sizeof(arr) / sizeof(arr[0]))
 
 // Pinos do I2C
-const uint I2C_SDA = 14;
-const uint I2C_SCL = 15;
+const unsigned int I2C_SDA = 14;
+const unsigned int I2C_SCL = 15;
+
+// Funções que exibem mensagens no display OLED
+void exibir_mensagem(const char* mensagem) {
+    uint8_t ssd[SSD1306_BUFFER_LENGTH];
+    memset(ssd, 0, SSD1306_BUFFER_LENGTH);  // Limpa a tela
+    ssd1306_draw_string(ssd, 5, 0, mensagem);  // Exibe a mensagem
+    struct render_area frame_area = {
+        .start_column = 0,
+        .end_column = ssd1306_width - 1,
+        .start_page = 0,
+        .end_page = ssd1306_n_pages - 1
+    };
+    render_on_display(ssd, &frame_area);  // Atualiza o display
+}
+
+// Função para o sinal verde
+void SinalAberto() {
+    exibir_mensagem("SINAL ABERTO - ATRAVESSAR COM CUIDADO");
+}
+
+// Função para o sinal amarelo
+void SinalAtencao() {
+    exibir_mensagem("SINAL DE ATENCAO - PREPARE-SE");
+}
+
+// Função para o sinal vermelho
+void SinalFechado() {
+    exibir_mensagem("SINAL FECHADO - AGUARDE");
+}
 
 int main() {
     // Inicialização da UART para depuração (opcional)
@@ -22,44 +53,22 @@ int main() {
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
 
-    // Inicialização do SSD1306
-    if (!ssd1306_init()) {
-        printf("Falha ao inicializar o display SSD1306!\n");
-        return -1;
-    }
+    // Inicialização do SSD1306 (sem verificação de retorno)
+    ssd1306_init();  // A função provavelmente não retorna um valor de erro
 
-    // Configuração da área de renderização
-    struct render_area frame_area = {
-        .start_column = 0,
-        .end_column = ssd1306_width - 1,
-        .start_page = 0,
-        .end_page = ssd1306_n_pages - 1
-    };
+    // Exemplo de lógica do semáforo
+    while (true) {  // Agora "true" está definido corretamente
+        // Simulação de alternância dos sinais
+        SinalAberto();  // Verde
+        sleep_ms(5000); // Espera 5 segundos
 
-    // Calcular o tamanho do buffer necessário para a renderização
-    calculate_render_area_buffer_length(&frame_area);
+        SinalAtencao();  // Amarelo
+        sleep_ms(2000); // Espera 2 segundos
 
-    // Limpar o display (preencher o buffer com zeros)
-    uint8_t ssd[SSD1306_BUFFER_LENGTH];
-    memset(ssd, 0, SSD1306_BUFFER_LENGTH);
-    render_on_display(ssd, &frame_area);
+        SinalFechado();  // Vermelho
+        sleep_ms(5000); // Espera 5 segundos
 
-    // Textos para exibir no display
-    char *text[] = {
-        "  Bem-vindos!   ",
-        "  Embarcatech   "
-    };
-
-    // Renderizar os textos no display
-    int y = 0; // Coordenada vertical inicial
-    for (uint i = 0; i < COUNT_OF(text); i++) {
-        ssd1306_draw_string(ssd, 5, y, text[i]);
-        y += 8; // Avançar para a próxima linha
-    }
-    render_on_display(ssd, &frame_area);
-
-    while (true) {
-        // Loop infinito (necessário em sistemas embarcados)
+        // Função para evitar bloqueio do processador
         tight_loop_contents();
     }
 
