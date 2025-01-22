@@ -61,3 +61,4 @@ target_link_libraries(display_oled
 )
 
 pico_add_extra_outputs(display_oled)
+.
