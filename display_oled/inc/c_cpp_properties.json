@@ -7,7 +7,7 @@
           "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/inc"
         ],
         "defines": [],
-        "compilerPath": "C:/Program Files (x86)/ArmGNUToolchain/14.2 rel1/bin/arm-none-eabi-gcc.exe",
+        "compilerPath": "C:/Program Files (x86)/ArmGNUToolchain/14.2rel1/bin/arm-none-eabi-gcc.exe",
         "intelliSenseMode": "windows-gcc-x64",
         "cStandard": "c11",
         "cppStandard": "c++17"
