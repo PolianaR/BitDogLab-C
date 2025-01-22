@@ -1,67 +1,48 @@
-# Generated Cmake Pico project file
+# Gerado automaticamente pelo CMake para o Raspberry Pi Pico
 
 cmake_minimum_required(VERSION 3.13)
 
+# Configuração do padrão de linguagem
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Initialise pico_sdk from installed location
-# (note this can come from environment, CMake cache etc)
-
-# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work == 
-if(WIN32)
-    set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.1.0)
-set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.0.0)
-# Caminho para o SDK do Raspberry Pi Pico
-set(PICO_SDK_PATH "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk")
-if (EXISTS ${picoVscode})
-    include(${picoVscode})
-endif()
-# ====================================================================================
-set(PICO_BOARD pico_w CACHE STRING "Board type")
-
-# Pull in Raspberry Pi Pico SDK (must be before project)
+# Configuração do SDK do Raspberry Pi Pico
+set(PICO_SDK_PATH "C:/Users/usuario.p/Documents/Rasp/BitDogLab-C/display_oled/pico-sdk")  # Caminho correto do SDK
+set(PICO_TOOLCHAIN_PATH "/usr/bin")
 include(pico_sdk_import.cmake)
 
+# Nome do projeto
 project(display_oled C CXX ASM)
 
-# Initialise the Raspberry Pi Pico SDK
+# Inicializar o SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
-add_executable(display_oled display_oled.c inc/ssd1306_i2c.c)
+# Adicionar executáveis (ajuste para o caminho correto dos arquivos)
+add_executable(display_oled 
+    display_oled.c
+    inc/ssd1306_i2c.c   # Supondo que o arquivo .c esteja na pasta "inc"
+)
 
+# Configuração do nome e versão do programa
 pico_set_program_name(display_oled "display_oled")
 pico_set_program_version(display_oled "0.1")
 
-# Modify the below lines to enable/disable output over UART/USB
+# Habilitar saída UART/USB
 pico_enable_stdio_uart(display_oled 0)
 pico_enable_stdio_usb(display_oled 1)
 
-# Add the standard library to the build
+# Adicionar as bibliotecas padrão
 target_link_libraries(display_oled
     pico_stdlib
-    pico_binary_info   # Adicionada a biblioteca pico_binary_info
-    hardware_i2c       # Bibliotecas necessárias para I2C
+    pico_binary_info  # Biblioteca pico_binary_info
+    hardware_i2c      # Biblioteca para I2C
 )
 
-# Add the standard include files to the build
+# Incluir diretórios de cabeçalhos (certifique-se de que o diretório "inc" está sendo incluído)
 target_include_directories(display_oled PRIVATE
-  ${CMAKE_CURRENT_LIST_DIR}
-  ${CMAKE_CURRENT_LIST_DIR}/inc  # Certifique-se de incluir o diretório "inc"
-
+    ${CMAKE_CURRENT_LIST_DIR}/inc
 )
 
-# Add any user requested libraries
-target_link_libraries(display_oled 
-    hardware_i2c
-)
-
+# Gerar arquivos adicionais para o binário
 pico_add_extra_outputs(display_oled)
-.
