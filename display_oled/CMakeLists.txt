@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 
-# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
+# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work == 
 if(WIN32)
     set(USERHOME $ENV{USERPROFILE})
 else()
@@ -34,7 +34,6 @@ project(display_oled C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
-
 add_executable(display_oled display_oled.c inc/ssd1306_i2c.c)
 
 pico_set_program_name(display_oled "display_oled")
@@ -46,7 +45,10 @@ pico_enable_stdio_usb(display_oled 1)
 
 # Add the standard library to the build
 target_link_libraries(display_oled
-        pico_stdlib)
+    pico_stdlib
+    pico_binary_info   # Adicionada a biblioteca pico_binary_info
+    hardware_i2c       # Bibliotecas necessárias para I2C
+)
 
 # Add the standard include files to the build
 target_include_directories(display_oled PRIVATE
@@ -55,8 +57,7 @@ target_include_directories(display_oled PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(display_oled 
-        hardware_i2c
-        )
+    hardware_i2c
+)
 
 pico_add_extra_outputs(display_oled)
-
