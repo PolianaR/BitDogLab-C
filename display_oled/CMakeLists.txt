@@ -24,6 +24,11 @@ if (EXISTS ${picoVscode})
 endif()
 # ====================================================================================
 set(PICO_BOARD pico_w CACHE STRING "Board type")
+# Incluir o pico-sdk
+set(PICO_SDK_PATH ${CMAKE_CURRENT_LIST_DIR}/../pico-sdk)
+
+# Inicializar o SDK
+include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -46,7 +51,9 @@ pico_enable_stdio_usb(display_oled 1)
 
 # Add the standard library to the build
 target_link_libraries(display_oled
-        pico_stdlib)
+        pico_stdlib
+        hardware_i2c
+        )
 
 # Add the standard include files to the build
 target_include_directories(display_oled PRIVATE
