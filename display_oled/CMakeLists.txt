@@ -1,7 +1,8 @@
-# Generated Cmake Pico project file
+# Gerado automaticamente pelo CMake para o Raspberry Pi Pico
 
 cmake_minimum_required(VERSION 3.13)
 
+# Configuração do padrão de linguagem
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -24,46 +25,38 @@ if (EXISTS ${picoVscode})
 endif()
 # ====================================================================================
 set(PICO_BOARD pico_w CACHE STRING "Board type")
-# Incluir o pico-sdk
-set(PICO_SDK_PATH ${CMAKE_CURRENT_LIST_DIR}/../pico-sdk)
-
-# Inicializar o SDK
-include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
+# Nome do projeto
 project(display_oled C CXX ASM)
 
-# Initialise the Raspberry Pi Pico SDK
+# Inicializar o SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+# Adicionar executáveis (ajuste para o caminho correto dos arquivos)
+add_executable(display_oled 
+    display_oled.c
+    inc/ssd1306_i2c.c   # Supondo que o arquivo .c esteja na pasta "inc"
+)
 
-add_executable(display_oled display_oled.c inc/ssd1306_i2c.c)
-
+# Configuração do nome e versão do programa
 pico_set_program_name(display_oled "display_oled")
 pico_set_program_version(display_oled "0.1")
 
-# Modify the below lines to enable/disable output over UART/USB
+# Habilitar saída UART/USB
 pico_enable_stdio_uart(display_oled 0)
 pico_enable_stdio_usb(display_oled 1)
 
-# Add the standard library to the build
+# Adicionar as bibliotecas padrão
 target_link_libraries(display_oled
-        pico_stdlib
-        hardware_i2c
-        )
+        pico_stdlib)
 
-# Add the standard include files to the build
+# Incluir diretórios de cabeçalhos (certifique-se de que o diretório "inc" está sendo incluído)
 target_include_directories(display_oled PRIVATE
-  ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/inc
 )
 
-# Add any user requested libraries
-target_link_libraries(display_oled 
-        hardware_i2c
-        )
-
+# Gerar arquivos adicionais para o binário
 pico_add_extra_outputs(display_oled)
-
