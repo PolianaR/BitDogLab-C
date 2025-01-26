@@ -1,85 +1,97 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <stdbool.h>  // Inclua esta linha para usar bool, true e false
-#include <stdint.h>   // Inclua esta linha para usar uint32_t
-#include "pico/stdlib.h"
-#include "pico/binary_info.h"
-#include "inc/ssd1306.h"
-#include "hardware/i2c.h"
+#include "pico/stdlib.h" 
+#include "hardware/i2c.h" 
+#include "ssd1306.h" // Biblioteca para controle do OLED 
+#include <stdbool.h> // Inclua esta linha para usar bool, true e false
+#include <stdint.h>  // Inclua esta linha para usar uint32_t
 
-const uint32_t I2C_SDA = 14;  // Use uint32_t em vez de uint
-const uint32_t I2C_SCL = 15;  // Use uint32_t em vez de uint
+#define I2C_SDA_PIN 4 
+#define I2C_SCL_PIN 5 
 
-int main()
-{
-    stdio_init_all();   // Inicializa os tipos stdio padrão presentes ligados ao binário
+// Definições dos pinos RGB
+#define LED_R_PIN 2
+#define LED_G_PIN 3
+#define LED_B_PIN 4
 
-    // Inicialização do i2c
-    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
+// Definição do pino do botão
+#define BTN_A_PIN 5
 
-    // Processo de inicialização completo do OLED SSD1306
-    ssd1306_init();
+// Configuração do display OLED 
+#define OLED_WIDTH 128 
+#define OLED_HEIGHT 32 
+ssd1306_t oled; 
 
-    // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
-    struct render_area frame_area = {
-        .start_column = 0,
-        .end_column = ssd1306_width - 1,
-        .start_page = 0,
-        .end_page = ssd1306_n_pages - 1
-    };
+void init_oled() { 
+    i2c_init(i2c_default, 100 * 1000); 
+    gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C); 
+    gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C); 
+    gpio_pull_up(I2C_SDA_PIN); 
+    gpio_pull_up(I2C_SCL_PIN); 
+    ssd1306_init(&oled, i2c_default, 0x3C, OLED_WIDTH, OLED_HEIGHT); 
+    ssd1306_clear(&oled); 
+    ssd1306_show(&oled); 
+} 
 
-    calculate_render_area_buffer_length(&frame_area);
+void display_message(const char* message) { 
+    ssd1306_clear(&oled); 
+    ssd1306_draw_string(&oled, 0, 0, message); // Certifique-se de que o valor 1 é válido para o tamanho da fonte ou modo de exibição
+    ssd1306_show(&oled); 
+} 
 
-    // zera o display inteiro
-    uint8_t ssd[ssd1306_buffer_length];
-    memset(ssd, 0, ssd1306_buffer_length);
-    render_on_display(ssd, &frame_area);
+void SinalAberto() { 
+    gpio_put(LED_R_PIN, 0); 
+    gpio_put(LED_G_PIN, 1); 
+    gpio_put(LED_B_PIN, 0); 
+    display_message("SINAL ABERTO - ATRAVESSAR COM CUIDADO"); 
+} 
 
-restart:
+void SinalAtencao() { 
+    gpio_put(LED_R_PIN, 1); 
+    gpio_put(LED_G_PIN, 1); 
+    gpio_put(LED_B_PIN, 0); 
+    display_message("SINAL DE ATENCAO - PREPARE-SE"); 
+} 
 
-// Parte do código para exibir a mensagem no display (opcional: mudar ssd1306_height para 32 em ssd1306_i2c.h)
-// /**
-    char *text[] = {
-        "  Bem-vindos!   ",
-        "  Embarcatech   "};
+void SinalFechado() { 
+    gpio_put(LED_R_PIN, 1); 
+    gpio_put(LED_G_PIN, 0); 
+    gpio_put(LED_B_PIN, 0); 
+    display_message("SINAL FECHADO - AGUARDE"); 
+} 
 
-    int y = 0;
-    for (uint32_t i = 0; i < count_of(text); i++)  // Use uint32_t em vez de uint
-    {
-        ssd1306_draw_string(ssd, 5, y, text[i]);
-        y += 8;
-    }
-    render_on_display(ssd, &frame_area);
-// */
+int main() { 
+    // Inicialização de LEDs e Botão 
+    gpio_init(LED_R_PIN); 
+    gpio_set_dir(LED_R_PIN, GPIO_OUT); 
+    gpio_init(LED_G_PIN); 
+    gpio_set_dir(LED_G_PIN, GPIO_OUT); 
+    gpio_init(LED_B_PIN); 
+    gpio_set_dir(LED_B_PIN, GPIO_OUT); 
 
-// Parte do código para exibir a linha no display (algoritmo de Bresenham)
-/**
-    ssd1306_draw_line(ssd, 10, 10, 100, 50, true);
-    render_on_display(ssd, &frame_area);
-*/
+    gpio_init(BTN_A_PIN); 
+    gpio_set_dir(BTN_A_PIN, GPIO_IN); 
+    gpio_pull_up(BTN_A_PIN); 
 
-// Parte do código para exibir o bitmap no display
-/**
-    const uint8_t bitmap_128x64[] = { 
-        // Bitmap data
-    };
+    // Inicialização do OLED 
+    init_oled(); 
 
-    ssd1306_t ssd_bm;
-    ssd1306_init_bm(&ssd_bm, 128, 64, false, 0x3C, i2c1);
-    ssd1306_config(&ssd_bm);
+    while (true) { 
+        SinalAberto(); 
+        int A_state = gpio_get(BTN_A_PIN); 
 
-    ssd1306_draw_bitmap(&ssd_bm, bitmap_128x64);
-*/
+        if (A_state) { 
+            SinalAtencao(); 
+            sleep_ms(5000); 
 
-    while(true) {
-        sleep_ms(1000);
-    }
+            SinalFechado(); 
+            sleep_ms(10000); 
+        } else { 
+            SinalAtencao(); 
+            sleep_ms(2000); 
 
-    return 0;
+            SinalFechado(); 
+            sleep_ms(8000); 
+        } 
+    } 
+
+    return 0; 
 }
