@@ -88,7 +88,8 @@ else()
 endif()
 
 # Configurações de SDK e ferramentas
-set(PICO_SDK_PATH "/mnt/c/Users/3p/Documents/Rasp/pico-sdk")set(PICO_BOARD pico_w CACHE STRING "Board type")
+set(PICO_SDK_PATH "/mnt/c/Users/3p/Documents/Rasp/pico-sdk") # Ajuste conforme o local no seu sistema
+set(PICO_BOARD pico_w CACHE STRING "Board type")
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 
 if (EXISTS ${picoVscode})
