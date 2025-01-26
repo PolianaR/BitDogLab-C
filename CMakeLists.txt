@@ -34,8 +34,8 @@ pico_sdk_init()
 
 # Adicionar executável (ajuste para o caminho correto dos arquivos)
 add_executable(display_oled 
-    display_oled/display_oled.c
-    display_oled/inc/ssd1306_i2c.c
+    src/display_oled.c
+    src/ssd1306_i2c.c
 )
 
 # Configuração do nome e versão do programa
@@ -54,7 +54,7 @@ target_link_libraries(display_oled
 
 # Incluir diretórios de cabeçalhos
 target_include_directories(display_oled PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/display_oled/inc
+    ${CMAKE_CURRENT_LIST_DIR}/inc
 )
 
 # Gerar arquivos adicionais para o binário
