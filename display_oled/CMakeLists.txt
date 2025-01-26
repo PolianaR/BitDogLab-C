@@ -32,9 +32,10 @@ pico_sdk_init()
 
 # Adicionar executável (ajuste para o caminho correto dos arquivos)
 add_executable(display_oled 
-    src/display_oled.c
-    src/ssd1306_i2c.c
+    inc/display_oled.c
+    inc/ssd1306_i2c.c
 )
+
 
 # Configuração do nome e versão do programa
 pico_set_program_name(display_oled "display_oled")
