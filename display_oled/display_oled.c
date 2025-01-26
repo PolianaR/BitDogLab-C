@@ -1,6 +1,6 @@
 #include "pico/stdlib.h" 
 #include "hardware/i2c.h" 
-#include "ssd1306.h" // Biblioteca para controle do OLED 
+#include "inc/ssd1306.h" // Biblioteca para controle do OLED
 #include <stdbool.h> // Inclua esta linha para usar bool, true e false
 #include <stdint.h>  // Inclua esta linha para usar uint32_t
 
