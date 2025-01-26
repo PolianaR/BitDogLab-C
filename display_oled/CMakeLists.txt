@@ -29,7 +29,19 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 include(pico_sdk_import.cmake)
 
 project(display_oled C CXX ASM)
+# Configurações de SDK e ferramentas
+set(PICO_SDK_PATH "/mnt/c/Users/3p/Documents/Rasp/pico-sdk") # Ajuste conforme o local no seu sistema
+set(PICO_BOARD pico_w CACHE STRING "Board type")
+set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 
+if (EXISTS ${picoVscode})
+    include(${picoVscode})
+endif()
+
+# Pull in Raspberry Pi Pico SDK (deve vir antes do 'project')
+include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+# Nome do projeto
+project(display_oled C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
@@ -46,17 +58,16 @@ pico_enable_stdio_usb(display_oled 1)
 
 # Add the standard library to the build
 target_link_libraries(display_oled
-        pico_stdlib)
+        pico_stdlib
+        hardware_i2c
+        )
 
 # Add the standard include files to the build
 target_include_directories(display_oled PRIVATE
-  ${CMAKE_CURRENT_LIST_DIR}
+  ${CMAKE_CURRENT_LIST_DIR}/inc
 )
 
-# Add any user requested libraries
-target_link_libraries(display_oled 
-        hardware_i2c
-        )
+
 
 pico_add_extra_outputs(display_oled)
 
