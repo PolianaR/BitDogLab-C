@@ -242,4 +242,9 @@ void ssd1306_draw_bitmap(ssd1306_t *ssd, const uint8_t *bitmap) {
 
         ssd1306_send_data(ssd);
     }
+    void ssd1306_show() {
+    // Implementação da função
+    // Aqui você pode colocar o código necessário para atualizar o display.
+}
+
 }
