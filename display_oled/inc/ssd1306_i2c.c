@@ -234,6 +234,12 @@ void ssd1306_send_data(ssd1306_t *ssd) {
     i2c_write_blocking(
     ssd->i2c_port, ssd->address, ssd->ram_buffer, ssd->bufsize, false );
 }
+void ssd1306_clear(ssd1306_t *ssd) {
+    memset(ssd->ram_buffer + 1, 0, ssd->bufsize - 1);
+}
+void ssd1306_show(ssd1306_t *ssd) {
+    ssd1306_send_data(ssd);
+}
 
 // Desenha o bitmap (a ser fornecido em display_oled.c) no display
 void ssd1306_draw_bitmap(ssd1306_t *ssd, const uint8_t *bitmap) {
