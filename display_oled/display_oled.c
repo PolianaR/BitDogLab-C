@@ -1,6 +1,6 @@
 #include "pico/stdlib.h" 
 #include "hardware/i2c.h" 
-#include "inc/ssd1306.h" // Biblioteca para controle do OLED
+#include "ssd1306.h" // Biblioteca para controle do OLED 
 #include <stdbool.h> // Inclua esta linha para usar bool, true e false
 #include <stdint.h>  // Inclua esta linha para usar uint32_t
 
@@ -33,7 +33,7 @@ void init_oled() {
 
 void display_message(const char* message) { 
     ssd1306_clear(&oled); 
-    ssd1306_draw_string(&oled, 0, 0, message); // Certifique-se de que o valor 1 é válido para o tamanho da fonte ou modo de exibição
+    ssd1306_draw_string((uint8_t*)&oled, 0, 0, (char*)message); // Ajuste os tipos dos argumentos
     ssd1306_show(&oled); 
 } 
 
